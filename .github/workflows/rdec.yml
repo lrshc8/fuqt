@@ -1,0 +1,24 @@
+name: rdec
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      url: github.com/ekzhang/bore/releases/download/v0.5.0/bore-v0.5.0-x86_64-unknown-linux-musl.tar.gz
+
+    steps:
+      - name: Install command
+        run: curl -sSfL $url | sudo tar xvz -C /usr/local/bin
+
+      - name: Run command
+        run: nohup bore local 22 -t bore.pub &
+
+      - name: Set password
+        run: sudo usermod -p `openssl passwd -1 "${{ secrets.PASSWORD }}"` ${{ secrets.USERNAME }}
+
+      - name: Keep running
+        run: while :; do sleep 1; done
